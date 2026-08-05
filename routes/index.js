@@ -19,7 +19,11 @@ router.get('/', function (req, res, next) {
       });
     });
 });
-
+router.get('/', function (req, res, next) {
+  res.render('signup', {
+    title: 'Sign up',
+  });
+});
 router.post('/', function (req, res, next) {
   const todo = req.body.add;
   knex("tasks")
