@@ -3,7 +3,6 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const passport = require('passport');
 
 const app = express();
 
@@ -19,9 +18,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // authorization
 require("./config/passport")(app);
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 // router
 app.use('/', require('./routes'));
