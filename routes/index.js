@@ -63,6 +63,28 @@ router.post('/', function (req, res, next) {
     });
 });
 
+router.post('/delete', function (req, res, next) {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/signin');
+  }
+
+  const taskId = req.body.id;
+
+  knex("tasks")
+    .where({
+      id: taskId,
+      user_id: req.user.id
+    })
+    .del()
+    .then(function () {
+      res.redirect('/');
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.redirect('/');
+    });
+});
+
 router.use('/signup', require('./signup'));
 router.use('/signin', require('./signin'));
 router.use('/logout', require('./logout'));
