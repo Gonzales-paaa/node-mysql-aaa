@@ -27,6 +27,7 @@ router.get('/', function (req, res, next) {
           isAuth: isAuth,
         });
       });
+
   } else {
     res.render('index', {
       title: 'ToDo App',
@@ -36,6 +37,8 @@ router.get('/', function (req, res, next) {
   }
 });
 
+
+/* タスク追加 */
 router.post('/', function (req, res, next) {
   const isAuth = req.isAuthenticated();
   const todo = req.body.add;
@@ -63,7 +66,37 @@ router.post('/', function (req, res, next) {
     });
 });
 
+
+/* タスク完了 */
+router.post('/complete', function (req, res, next) {
+
+  if (!req.isAuthenticated()) {
+    return res.redirect('/signin');
+  }
+
+  const taskId = req.body.id;
+
+  knex("tasks")
+    .where({
+      id: taskId,
+      user_id: req.user.id
+    })
+    .update({
+      completed: true
+    })
+    .then(function () {
+      res.redirect('/');
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.redirect('/');
+    });
+});
+
+
+/* タスク削除 */
 router.post('/delete', function (req, res, next) {
+
   if (!req.isAuthenticated()) {
     return res.redirect('/signin');
   }
@@ -84,6 +117,7 @@ router.post('/delete', function (req, res, next) {
       res.redirect('/');
     });
 });
+
 
 router.use('/signup', require('./signup'));
 router.use('/signin', require('./signin'));

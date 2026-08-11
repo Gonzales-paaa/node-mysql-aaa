@@ -23,39 +23,105 @@
   <div class="row">
 
     <div class="col-md-6">
+
       <form action="/" method="post">
+
         <label>タスクの追加</label>
-        <input required type="text" name="add" placeholder="何をする?"/>
-        <input class="btn btn-primary" type="submit" value="追加"/>
+
+        <input
+          required
+          type="text"
+          name="add"
+          placeholder="何をする?"
+        />
+
+        <input
+          class="btn btn-primary"
+          type="submit"
+          value="追加"
+        />
+
       </form>
+
     </div>
 
+
     <div class="col-md-6">
+
       <ul>
 
         <% for(let todo of todos){ %>
 
           <li style="display: flex; justify-content: space-between; align-items: center; width: 400px;">
 
-            <span>
-              <%= todo.content %>
-            </span>
+            <% if(todo.completed) { %>
 
-            <form action="/delete" method="post">
-              <input type="hidden" name="id" value="<%= todo.id %>"/>
-              <input class="btn btn-danger btn-sm" type="submit" value="削除"/>
-            </form>
+              <span style="text-decoration: line-through; color: #888;">
+                <%= todo.content %>
+              </span>
+
+            <% } else { %>
+
+              <span>
+                <%= todo.content %>
+              </span>
+
+            <% } %>
+
+
+            <div>
+
+              <% if(!todo.completed) { %>
+
+                <form action="/complete" method="post" style="display: inline;">
+
+                  <input
+                    type="hidden"
+                    name="id"
+                    value="<%= todo.id %>"
+                  />
+
+                  <input
+                    class="btn btn-success btn-sm"
+                    type="submit"
+                    value="完了"
+                  />
+
+                </form>
+
+              <% } %>
+
+
+              <form action="/delete" method="post" style="display: inline;">
+
+                <input
+                  type="hidden"
+                  name="id"
+                  value="<%= todo.id %>"
+                />
+
+                <input
+                  class="btn btn-danger btn-sm"
+                  type="submit"
+                  value="削除"
+                />
+
+              </form>
+
+            </div>
 
           </li>
 
         <% } %>
 
       </ul>
+
     </div>
 
   </div>
 
 </div>
+
 
 <% } else { %>
 
