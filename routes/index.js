@@ -2,18 +2,25 @@ const express = require('express');
 const router = express.Router();
 const knex = require('../db/knex');
 
+
+/* トップページ */
 router.get('/', function (req, res, next) {
+
   const isAuth = req.isAuthenticated();
+
+  // カレンダーで選択した年月
+  const selectedMonth = req.query.month;
 
   console.log(`isAuth: ${isAuth}`);
 
-  // カレンダーで選択された年月
-  const selectedMonth = req.query.month;
-
   if (isAuth) {
+
     knex("tasks")
-      .where({ user_id: req.user.id })
+      .where({
+        user_id: req.user.id
+      })
       .select("*")
+
       .then(function (results) {
 
         res.render('index', {
@@ -24,7 +31,9 @@ router.get('/', function (req, res, next) {
         });
 
       })
+
       .catch(function (err) {
+
         console.error(err);
 
         res.render('index', {
@@ -33,6 +42,7 @@ router.get('/', function (req, res, next) {
           isAuth: isAuth,
           month: selectedMonth
         });
+
       });
 
   } else {
@@ -45,6 +55,7 @@ router.get('/', function (req, res, next) {
     });
 
   }
+
 });
 
 
@@ -66,18 +77,23 @@ router.post('/', function (req, res, next) {
       content: todo,
       deadline: deadline
     })
+
     .then(function () {
+
       res.redirect('/');
+
     })
+
     .catch(function (err) {
+
       console.error(err);
 
       res.render('index', {
         title: 'ToDo App',
         todos: [],
-        isAuth: isAuth,
-        month: selectedMonth
+        isAuth: isAuth
       });
+
     });
 
 });
@@ -97,15 +113,23 @@ router.post('/complete', function (req, res, next) {
       id: taskId,
       user_id: req.user.id
     })
+
     .update({
       completed: true
     })
+
     .then(function () {
+
       res.redirect('/');
+
     })
+
     .catch(function (err) {
+
       console.error(err);
+
       res.redirect('/');
+
     });
 
 });
@@ -125,13 +149,21 @@ router.post('/delete', function (req, res, next) {
       id: taskId,
       user_id: req.user.id
     })
+
     .del()
+
     .then(function () {
+
       res.redirect('/');
+
     })
+
     .catch(function (err) {
+
       console.error(err);
+
       res.redirect('/');
+
     });
 
 });
@@ -140,5 +172,6 @@ router.post('/delete', function (req, res, next) {
 router.use('/signup', require('./signup'));
 router.use('/signin', require('./signin'));
 router.use('/logout', require('./logout'));
+
 
 module.exports = router;
